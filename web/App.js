@@ -2,13 +2,6 @@ var declareWinner = true;
 
 import bulletTrain from "bullet-train-client"; //Add this line if you're using bulletTrain via npm
 
-bulletTrain.init({
-    environmentID:"piw7W3VgXX8xe6uuZhYx9V",
-    onChange: (oldFlags,params)=>{ //Occurs whenever flags are changed
-        declareWinner = bulletTrain.hasFeature("declare-winner");
-    }
-});
-
 import React from 'react'
 function Square(props) {
     return (
@@ -40,6 +33,16 @@ function calculateWinner(squares) {
 }
 
 class Board extends React.Component {
+    componentDidMount() {
+        bulletTrain.init({
+            environmentID:"piw7W3VgXX8xe6uuZhYx9V",
+            onChange: (oldFlags,params)=>{ //Occurs whenever flags are changed
+                declareWinner = bulletTrain.hasFeature("declare-winner");
+                this.setState({selected: !bulletTrain.hasFeature("select-who-goes-first")})
+            }
+        });
+    }
+
     constructor(props) {
         super(props);
         this.state = {
@@ -80,7 +83,15 @@ class Board extends React.Component {
 
         return (
             <div>
-                <div className="status">{status}</div>
+                {!this.state.selected ? (
+                    <div>
+                        Who goes first?
+                        <button onClick={() => this.setState({selected: true})}>X</button>
+                        <button onClick={() => this.setState({selected: true, xIsNext: true})}>O</button>
+                    </div>
+                ) : (
+                    <div className="status">{status}</div>
+                )}
                 <div className="board-row">
                     {this.renderSquare(0)}
                     {this.renderSquare(1)}
