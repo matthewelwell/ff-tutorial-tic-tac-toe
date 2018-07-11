@@ -1,3 +1,14 @@
+var declareWinner = true;
+
+import bulletTrain from "bullet-train-client"; //Add this line if you're using bulletTrain via npm
+
+bulletTrain.init({
+    environmentID:"piw7W3VgXX8xe6uuZhYx9V",
+    onChange: (oldFlags,params)=>{ //Occurs whenever flags are changed
+        declareWinner = bulletTrain.hasFeature("declare-winner");
+    }
+});
+
 import React from 'react'
 function Square(props) {
     return (
@@ -8,6 +19,7 @@ function Square(props) {
 }
 
 function calculateWinner(squares) {
+    if (!declareWinner) return null;
     const lines = [
         [0, 1, 2],
         [3, 4, 5],
